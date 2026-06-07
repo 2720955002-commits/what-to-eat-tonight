@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今晚吃啥 - 线框图</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 24px;
+      color: #444;
+    }
+    .phones {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .phone {
+      width: 220px;
+      height: 430px;
+      border: 2px solid #ccc;
+      border-radius: 24px;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .phone-label {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .status-bar {
+      height: 24px;
+      background: #f8f4f0;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-size: 10px;
+      color: #888;
+      justify-content: space-between;
+    }
+
+    .content {
+      padding: 0 12px;
+    }
+
+    .screen-title {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      padding: 10px 0 4px;
+    }
+    .screen-subtitle {
+      font-size: 11px;
+      color: #999;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .count-selector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .count-btn {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: #faf5f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .count-btn.fill {
+      background: #E8A87C;
+      border-color: #d4956b;
+      color: #fff;
+    }
+    .count-val {
+      font-size: 18px;
+      font-weight: 600;
+      color: #E8A87C;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .big-circle {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: #E8A87C;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .card {
+      background: #faf5f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border: 0.5px solid #eee;
+      font-size: 11px;
+    }
+    .card-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 28px;
+      background: #f8f4f0;
+      border-top: 0.5px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      font-size: 9px;
+      color: #999;
+    }
+    .tab-bar .active {
+      color: #E8A87C;
+      font-weight: 600;
+    }
+
+    .search-bar {
+      background: #f5f0eb;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #bbb;
+      margin-bottom: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .grid-item {
+      background: #faf5f0;
+      border-radius: 8px;
+      border: 0.5px solid #eee;
+      padding: 8px;
+    }
+    .grid-item .img-placeholder {
+      height: 40px;
+      background: #f0ebe6;
+      border-radius: 6px;
+      margin-bottom: 4px;
+    }
+    .grid-item .name {
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .filter-tabs {
+      display: flex;
+      background: #f5f0eb;
+      border-radius: 8px;
+      padding: 2px;
+      margin-bottom: 8px;
+    }
+    .filter-tabs span {
+      flex: 1;
+      text-align: center;
+      padding: 4px 0;
+      font-size: 10px;
+      border-radius: 6px;
+    }
+    .filter-tabs span.active {
+      background: #E8A87C;
+      color: #fff;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .chip {
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 9px;
+      border: 0.5px solid #ddd;
+    }
+    .chip.fill {
+      background: #E8A87C;
+      color: #fff;
+      border-color: #d4956b;
+    }
+
+    .filter-row {
+      font-size: 10px;
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #555;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      font-size: 11px;
+      color: #bbb;
+      line-height: 1.8;
+    }
+
+    .history-group {
+      margin-bottom: 6px;
+    }
+    .history-group .date-label {
+      font-size: 10px;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    .legend {
+      margin-top: 20px;
+      max-width: 1160px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #f8f4f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .add-btn {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #E8A87C;
+      color: #fff;
+      text-align: center;
+      line-height: 22px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .gear {
+      float: right;
+      margin-top: -24px;
+      font-size: 16px;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+  <h1>📱 「今晚吃啥」App 线框图</h1>
+
+  <div class="phones">
+
+    <!-- Phone 1: 首页抽选 -->
+    <div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>🔋</span></div>
+        <div class="content">
+          <div class="screen-title">今晚吃啥 <span class="gear">⚙️</span></div>
+          <div class="screen-subtitle">今天想吃几个菜？</div>
+          <div class="count-selector">
+            <div class="count-btn">−</div>
+            <div class="count-val">2</div>
+            <div class="count-btn fill">+</div>
+          </div>
+          <div class="big-circle">🎲<br>摇一摇</div>
+          <div class="card">番茄炒蛋 · 15min ⭐</div>
+          <div class="card">青椒肉丝 · 20min ⭐</div>
+        </div>
+        <div class="tab-bar"><span class="active">●首页</span><span>菜谱库</span><span>筛选</span><span>收藏</span><span>历史</span></div>
+      </div>
+      <div class="phone-label">① 首页抽选</div>
+    </div>
+
+    <!-- Phone 2: 菜谱库 -->
+    <div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>🔋</span></div>
+        <div class="content">
+          <div class="screen-title">菜谱库 <span class="add-btn">+</span></div>
+          <div class="search-bar">🔍 搜索菜谱...</div>
+          <div class="grid">
+            <div class="grid-item"><div class="img-placeholder"></div><div class="name">番茄炒蛋</div></div>
+            <div class="grid-item"><div class="img-placeholder"></div><div class="name">青椒肉丝</div></div>
+            <div class="grid-item"><div class="img-placeholder"></div><div class="name">麻婆豆腐</div></div>
+            <div class="grid-item"><div class="img-placeholder"></div><div class="name">红烧排骨</div></div>
+          </div>
+        </div>
+        <div class="tab-bar"><span>首页</span><span class="active">●菜谱库</span><span>筛选</span><span>收藏</span><span>历史</span></div>
+      </div>
+      <div class="phone-label">② 菜谱库</div>
+    </div>
+
+    <!-- Phone 3: 筛选 -->
+    <div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>🔋</span></div>
+        <div class="content">
+          <div class="screen-title">筛选</div>
+          <div class="filter-tabs"><span class="active">我有食材</span><span>我想吃</span></div>
+          <div class="section-label">选择食材</div>
+          <div class="chip-group">
+            <span class="chip fill">番茄</span>
+            <span class="chip fill">鸡蛋</span>
+            <span class="chip">白菜</span>
+          </div>
+          <div class="section-label">口味</div>
+          <div class="filter-row">辣 □  清淡 □  酸甜 □</div>
+          <div class="section-label">用时</div>
+          <div class="filter-row">＜15min □  ＜30min □</div>
+          <div class="section-label">筛选结果（3道）</div>
+          <div class="card">番茄炒蛋 · 酸甜 · 15min</div>
+          <div class="card">西红柿蛋汤 · 酸甜 · 15min</div>
+          <div class="card">糖拌番茄 · 清甜 · 5min</div>
+        </div>
+        <div class="tab-bar"><span>首页</span><span>菜谱库</span><span class="active">●筛选</span><span>收藏</span><span>历史</span></div>
+      </div>
+      <div class="phone-label">③ 筛选</div>
+    </div>
+
+    <!-- Phone 4: 收藏 -->
+    <div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>🔋</span></div>
+        <div class="content">
+          <div class="screen-title">收藏</div>
+          <div class="empty-state">
+            💛 还没有收藏的菜谱<br>
+            在菜谱详情页点击❤️收藏
+          </div>
+        </div>
+        <div class="tab-bar"><span>首页</span><span>菜谱库</span><span>筛选</span><span class="active">●收藏</span><span>历史</span></div>
+      </div>
+      <div class="phone-label">④ 收藏</div>
+    </div>
+
+    <!-- Phone 5: 历史 -->
+    <div>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>🔋</span></div>
+        <div class="content">
+          <div class="screen-title">历史记录</div>
+          <div class="history-group">
+            <div class="date-label">— 今天 —</div>
+            <div class="card">番茄炒蛋 + 青椒肉丝</div>
+          </div>
+          <div class="history-group">
+            <div class="date-label">— 昨天 —</div>
+            <div class="card">麻婆豆腐 + 番茄蛋汤</div>
+            <div class="card">红烧排骨 + 醋溜白菜</div>
+          </div>
+        </div>
+        <div class="tab-bar"><span>首页</span><span>菜谱库</span><span>筛选</span><span>收藏</span><span class="active">●历史</span></div>
+      </div>
+      <div class="phone-label">⑤ 历史记录</div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <strong>图例说明：</strong><br>
+    ① 首页抽选 — 摇一摇按钮 + 菜数选择器 + 设置⚙️入口 + 结果卡片<br>
+    ② 菜谱库 — 搜索框 + 网格卡片 + 添加菜谱(+)按钮<br>
+    ③ 筛选 — 双模式（我有食材 / 我想吃）+ 食材/口味/用时筛选 + 结果列表<br>
+    ④ 收藏 — 空状态引导（有收藏时显示收藏列表）<br>
+    ⑤ 历史记录 — 按日期分组展示历史用餐记录<br>
+    <strong>配色方案：</strong>暖杏色(#E8A87C)主色 · 暖白背景 · 低饱和度 · 大圆角
+  </div>
+
+</body>
+</html>

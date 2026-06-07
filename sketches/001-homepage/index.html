@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>今晚吃啥 - 首页</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #FDF8F5;
+      color: #2D2D2D;
+      line-height: 1.5;
+    }
+
+    /* iOS-style status bar */
+    .status-bar {
+      height: 44px;
+      background: #FDF8F5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 12px;
+      color: #8B8B8B;
+    }
+
+    /* Tab bar */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #FDF8F5;
+      border-top: 0.5px solid #F0EBE6;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: 8px;
+    }
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 10px;
+      color: #8B8B8B;
+      cursor: pointer;
+    }
+    .tab-item.active {
+      color: #E8A87C;
+    }
+    .tab-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    /* Main content area - with bottom padding for tab bar */
+    .content {
+      padding: 0 16px 80px 16px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* Big round button (摇一摇) */
+    .shake-btn {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #E8A87C, #D4956B);
+      border: none;
+      color: white;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(232, 168, 124, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .shake-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 10px rgba(232, 168, 124, 0.3);
+    }
+
+    /* Count selector */
+    .count-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid #F0EBE6;
+      background: #FAF5F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #2D2D2D;
+      cursor: pointer;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .count-btn:active {
+      background: #F0EBE6;
+    }
+    .count-btn.primary {
+      background: linear-gradient(135deg, #E8A87C, #D4956B);
+      border: none;
+      color: white;
+    }
+    .count-btn.primary:active {
+      opacity: 0.9;
+    }
+    .count-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #E8A87C;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    /* Result card */
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 0.5px solid #F0EBE6;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .result-card .thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #F5F0EB, #EDE5DC);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    /* Action buttons (确定/重摇) */
+    .action-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+    .action-btn.confirm {
+      background: linear-gradient(135deg, #E8A87C, #D4956B);
+      color: white;
+      box-shadow: 0 4px 12px rgba(232, 168, 124, 0.3);
+    }
+    .action-btn.reset {
+      background: #FAF5F0;
+      color: #8B8B8B;
+      border: 1px solid #F0EBE6;
+    }
+
+    /* Section header */
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2D2D2D;
+      margin-bottom: 10px;
+    }
+
+    /* Filter pills */
+    .pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      border: 1px solid #F0EBE6;
+      background: white;
+      color: #8B8B8B;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .pill.active {
+      background: #E8A87C;
+      border-color: #E8A87C;
+      color: white;
+    }
+
+    /* Ingredient chip */
+    .chip {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      background: #FAF5F0;
+      color: #2D2D2D;
+      border: 0.5px solid #F0EBE6;
+    }
+    .chip.selected {
+      background: #E8A87C;
+      color: white;
+      border-color: #E8A87C;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      width: 340px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .modal-box h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .modal-close {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+      color: #8B8B8B;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span class="font-semibold">今晚吃啥</span>
+    <span>🔋 100%</span>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6 pt-2">
+      <div>
+        <h1 class="text-2xl font-bold" style="color: #2D2D2D;">今晚吃啥</h1>
+        <p class="text-sm" style="color: #8B8B8B;">纠结终结者 🎯</p>
+      </div>
+      <button onclick="showModal('config-modal')" style="width: 40px; height: 40px; border-radius: 12px; background: #FAF5F0; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+        ⚙️
+      </button>
+    </div>
+
+    <!-- Count Selector -->
+    <div class="flex items-center justify-center gap-3 mb-6">
+      <button class="count-btn" onclick="changeCount(-1)">−</button>
+      <span class="count-value" id="dishCount">2</span>
+      <span class="text-sm" style="color: #8B8B8B;">个菜</span>
+      <button class="count-btn primary" onclick="changeCount(1)">+</button>
+    </div>
+
+    <!-- Shake Button -->
+    <div class="flex justify-center mb-6">
+      <button class="shake-btn" onclick="shakeResult()">
+        <div class="text-center">
+          <div>🎲</div>
+          <div>摇一摇</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Result Section -->
+    <div id="resultSection">
+      <div class="section-title flex items-center justify-between">
+        <span>今天吃这些 🍽️</span>
+        <span class="text-xs" style="color: #8B8B8B;">不满意？重新摇</span>
+      </div>
+
+      <div class="space-y-3" id="resultList">
+        <!-- Card 1 -->
+        <div class="result-card">
+          <div class="thumb">🍅</div>
+          <div class="flex-1">
+            <div class="font-semibold text-sm">番茄炒蛋</div>
+            <div class="flex gap-2 mt-1">
+              <span class="chip">15min</span>
+              <span class="chip">⭐ 简单</span>
+              <span class="chip">酸甜</span>
+            </div>
+          </div>
+          <button onclick="toggleFavorite(this)" style="font-size: 20px; background: none; border: none; cursor: pointer;">🤍</button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="result-card">
+          <div class="thumb">🥩</div>
+          <div class="flex-1">
+            <div class="font-semibold text-sm">青椒肉丝</div>
+            <div class="flex gap-2 mt-1">
+              <span class="chip">20min</span>
+              <span class="chip">⭐ 简单</span>
+              <span class="chip">鲜香</span>
+            </div>
+          </div>
+          <button onclick="toggleFavorite(this)" style="font-size: 20px; background: none; border: none; cursor: pointer;">🤍</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-3 mt-6">
+        <button class="action-btn reset" onclick="shakeResult()">🔄 重新摇</button>
+        <button class="action-btn confirm" onclick="confirmDinner()">✅ 就吃这些</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <span class="tab-icon">🏠</span>
+      <span>首页</span>
+    </div>
+    <div class="tab-item" onclick="showToast('菜谱库 - 开发中')">
+      <span class="tab-icon">📖</span>
+      <span>菜谱库</span>
+    </div>
+    <div class="tab-item" onclick="showToast('筛选 - 开发中')">
+      <span class="tab-icon">🔍</span>
+      <span>筛选</span>
+    </div>
+    <div class="tab-item" onclick="showToast('收藏 - 开发中')">
+      <span class="tab-icon">❤️</span>
+      <span>收藏</span>
+    </div>
+    <div class="tab-item" onclick="showToast('历史 - 开发中')">
+      <span class="tab-icon">📋</span>
+      <span>历史</span>
+    </div>
+  </div>
+
+  <!-- Config Modal -->
+  <div id="config-modal" class="modal-overlay" style="display: none;" onclick="closeModal(event, 'config-modal')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <span class="modal-close" onclick="hideModal('config-modal')">✕</span>
+      <h3>⚙️ 抽选配置</h3>
+
+      <div class="space-y-4">
+        <label class="flex items-center justify-between">
+          <span class="text-sm">防重复推荐</span>
+          <input type="checkbox" checked class="w-5 h-5" style="accent-color: #E8A87C;">
+        </label>
+        <div class="flex items-center gap-2 text-xs ml-5" style="color: #8B8B8B;">
+          <span>最近</span>
+          <input type="number" value="7" class="w-12 p-1 border rounded-lg text-center" style="border-color: #F0EBE6;">
+          <span>天内</span>
+        </div>
+
+        <label class="flex items-center justify-between">
+          <span class="text-sm">收藏优先</span>
+          <input type="checkbox" class="w-5 h-5" style="accent-color: #E8A87C;">
+        </label>
+
+        <label class="flex items-center justify-between">
+          <span class="text-sm">口味偏好</span>
+          <input type="checkbox" class="w-5 h-5" style="accent-color: #E8A87C;">
+        </label>
+
+        <label class="flex items-center justify-between">
+          <span class="text-sm">用时限制</span>
+          <input type="checkbox" class="w-5 h-5" style="accent-color: #E8A87C;">
+        </label>
+        <div class="flex items-center gap-2 text-xs ml-5" style="color: #8B8B8B;">
+          <span>不超过</span>
+          <input type="number" value="30" class="w-12 p-1 border rounded-lg text-center" style="border-color: #F0EBE6;">
+          <span>分钟</span>
+        </div>
+
+        <label class="flex items-center justify-between">
+          <span class="text-sm">包含主食</span>
+          <input type="checkbox" checked class="w-5 h-5" style="accent-color: #E8A87C;">
+        </label>
+
+        <label class="flex items-center justify-between">
+          <span class="text-sm">冰箱里有啥菜</span>
+          <input type="checkbox" onclick="document.getElementById('fridge-section').style.display = this.checked ? 'block' : 'none'" class="w-5 h-5" style="accent-color: #E8A87C;">
+        </label>
+
+        <div id="fridge-section" style="display: none;" class="ml-5">
+          <button onclick="showModal('fridge-modal')" class="w-full p-2 text-sm rounded-xl" style="background: #FAF5F0; border: 0.5px dashed #D4956B; color: #D4956B;">
+            + 选择/输入冰箱里的食材
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fridge Modal -->
+  <div id="fridge-modal" class="modal-overlay" style="display: none;" onclick="closeModal(event, 'fridge-modal')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <span class="modal-close" onclick="hideModal('fridge-modal')">✕</span>
+      <h3>🧊 冰箱里有什么</h3>
+
+      <div class="mb-4">
+        <input type="text" placeholder="输入自定义食材..." class="w-full p-2.5 text-sm rounded-xl border" style="border-color: #F0EBE6; background: #FAF5F0;">
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <p class="text-xs font-semibold mb-2" style="color: #8B8B8B;">🥩 肉类</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip">猪肉</span>
+            <span class="chip selected">鸡蛋</span>
+            <span class="chip">鸡肉</span>
+            <span class="chip">排骨</span>
+            <span class="chip">五花肉</span>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-semibold mb-2" style="color: #8B8B8B;">🥬 蔬菜</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip selected">番茄</span>
+            <span class="chip">土豆</span>
+            <span class="chip selected">青椒</span>
+            <span class="chip">茄子</span>
+            <span class="chip">白菜</span>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-semibold mb-2" style="color: #8B8B8B;">🧂 调味</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip selected">蒜</span>
+            <span class="chip selected">葱</span>
+            <span class="chip">姜</span>
+            <span class="chip">干辣椒</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="w-full mt-4 p-3 text-sm font-medium rounded-xl" style="background: linear-gradient(135deg, #E8A87C, #D4956B); color: white; border: none; cursor: pointer;" onclick="hideModal('fridge-modal')">
+        ✅ 确定，开始筛选
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" style="position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: #2D2D2D; color: white; padding: 10px 20px; border-radius: 10px; font-size: 14px; display: none; z-index: 200;"></div>
+
+  <script>
+    let count = 2;
+
+    function changeCount(delta) {
+      count = Math.max(1, Math.min(5, count + delta));
+      document.getElementById('dishCount').textContent = count;
+    }
+
+    function shakeResult() {
+      const btn = document.querySelector('.shake-btn');
+      btn.style.transform = 'rotate(15deg) scale(0.9)';
+      setTimeout(() => btn.style.transform = '', 200);
+
+      showToast('🎲 摇一摇中...');
+      setTimeout(() => {
+        showToast('✨ 摇好了！');
+      }, 600);
+    }
+
+    function toggleFavorite(el) {
+      if (el.textContent === '🤍') {
+        el.textContent = '❤️';
+        showToast('已收藏 💛');
+      } else {
+        el.textContent = '🤍';
+        showToast('已取消收藏');
+      }
+    }
+
+    function confirmDinner() {
+      showToast('✅ 今晚就吃这些！已记录到历史');
+    }
+
+    function showModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function hideModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function closeModal(event, id) {
+      if (event.target === event.currentTarget) {
+        document.getElementById(id).style.display = 'none';
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 1500);
+    }
+  </script>
+
+</body>
+</html>
