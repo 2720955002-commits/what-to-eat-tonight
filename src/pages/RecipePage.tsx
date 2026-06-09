@@ -19,6 +19,7 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getRecipeEmoji, getCategoryGradient } from '@/lib/recipe-visual'
 import EmptyState from '@/components/EmptyState'
 import { SkeletonList } from '@/components/Skeleton'
 
@@ -294,14 +295,9 @@ function RecipePage() {
               className="overflow-hidden transition-all active:scale-[0.98]"
               onClick={() => navigate(`/recipes/${recipe.id}`)}
             >
-              {/* 图片 */}
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={recipe.image}
-                  alt={recipe.name}
-                  className="h-full w-full object-cover transition-transform hover:scale-105"
-                  loading="lazy"
-                />
+              {/* Emoji + 渐变色卡片 */}
+              <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${getCategoryGradient(recipe.category)} flex items-center justify-center`}>
+                <span className="text-5xl">{getRecipeEmoji(recipe.name)}</span>
                 {/* 收藏角标 */}
                 {favoriteIds.has(recipe.id) && (
                   <div className="absolute right-2 top-2 rounded-full bg-white/80 p-1">
@@ -345,14 +341,9 @@ function RecipePage() {
               className="flex overflow-hidden transition-all active:scale-[0.99]"
               onClick={() => navigate(`/recipes/${recipe.id}`)}
             >
-              {/* 缩略图 */}
-              <div className="h-24 w-24 shrink-0 overflow-hidden">
-                <img
-                  src={recipe.image}
-                  alt={recipe.name}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
+              {/* Emoji 缩略图 */}
+              <div className={`flex h-24 w-24 shrink-0 items-center justify-center bg-gradient-to-br ${getCategoryGradient(recipe.category)}`}>
+                <span className="text-4xl">{getRecipeEmoji(recipe.name)}</span>
               </div>
 
               {/* 信息 */}

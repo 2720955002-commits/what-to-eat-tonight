@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { getRecipe, isFavorited, addFavorite, removeFavorite } from '@/db'
-import type { Recipe } from '@/db/types'
+import type { Recipe, Flavor } from '@/db/types'
+import { getRecipeEmoji, getCategoryGradient } from '@/lib/recipe-visual'
 import {
   ArrowLeft,
   Heart,
@@ -201,12 +202,13 @@ function RecipeDetailPage() {
       {/* ============================================
           顶部：英雄图 + 返回按钮 + 收藏按钮
           ============================================ */}
-      <div className="relative h-64 overflow-hidden">
-        <img
-          src={recipe.image}
-          alt={recipe.name}
-          className="h-full w-full object-cover"
-        />
+      <div className={`relative flex h-64 items-center justify-center overflow-hidden bg-gradient-to-br ${getCategoryGradient(recipe.category)}`}>
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-7xl">{getRecipeEmoji(recipe.name)}</span>
+          <span className="rounded-full bg-white/30 px-3 py-0.5 text-sm text-white backdrop-blur-sm">
+            {recipe.category}
+          </span>
+        </div>
         {/* 渐变遮罩 */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 

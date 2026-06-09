@@ -15,13 +15,8 @@ import EmptyState from '@/components/EmptyState'
 import { SkeletonCard } from '@/components/Skeleton'
 import { getFavoritesWithRecipes, removeFavorite } from '@/db'
 import type { Recipe, Favorite } from '@/db/types'
-import {
-  Heart,
-  Clock,
-  Bookmark,
-  AlertCircle,
-  ChefHat,
-} from 'lucide-react'
+import { Heart, Clock, Bookmark, AlertCircle, ChefHat } from 'lucide-react'
+import { getRecipeEmoji, getCategoryGradient } from '@/lib/recipe-visual'
 
 // ============================================================
 // 页面组件
@@ -161,14 +156,9 @@ function FavoritesPage() {
             className="flex overflow-hidden transition-all active:scale-[0.99]"
             onClick={() => navigate(`/recipes/${recipe.id}`)}
           >
-            {/* 缩略图 */}
-            <div className="h-24 w-24 shrink-0 overflow-hidden">
-              <img
-                src={recipe.image}
-                alt={recipe.name}
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
+            {/* Emoji 缩略图 */}
+            <div className={`flex h-24 w-24 shrink-0 items-center justify-center bg-gradient-to-br ${getCategoryGradient(recipe.category)}`}>
+              <span className="text-4xl">{getRecipeEmoji(recipe.name)}</span>
             </div>
 
             {/* 信息区 */}
