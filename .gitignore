@@ -20,6 +20,9 @@ dist
 .DS_Store
 Thumbs.db
 
+# Rogue path aliases
+@/
+
 # Logs
 *.log
 npm-debug.log*
